@@ -19,7 +19,6 @@ log = "0.4"       # Logging
 env_logger = "0.10"
 dirs = "5.0"      # For finding user directories
 notify = "5.1"    # For file system events
-x11rb = { version = "0.12", features = ["all-extensions"] }  # For X11 window tracking on Linux
 
 # GUI dependencies
 eframe = "0.24"   # egui framework

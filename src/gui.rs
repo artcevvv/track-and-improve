@@ -8,6 +8,7 @@ use crate::{
 use chrono::{DateTime, Datelike, Duration, Local, Utc};
 use eframe::egui;
 use std::sync::{Arc, Mutex};
+use std::time::Instant;
 
 pub struct RizeCloneApp {
     config: Config,
@@ -16,6 +17,8 @@ pub struct RizeCloneApp {
     calendar: Arc<Mutex<Calendar>>,
     selected_date: DateTime<Local>,
     current_tab: Tab,
+    last_update: Instant,
+    update_interval: std::time::Duration,
 }
 
 #[derive(PartialEq)]
@@ -40,16 +43,13 @@ impl RizeCloneApp {
             calendar,
             selected_date: Local::now(),
             current_tab: Tab::Dashboard,
+            last_update: Instant::now(),
+            update_interval: std::time::Duration::from_millis(100), // Update every 100ms
         }
     }
 
     fn render_dashboard(&mut self, ui: &mut egui::Ui) {
         ui.heading("Dashboard");
-        
-        // Update process tracking
-        if let Ok(mut tracker) = self.process_tracker.lock() {
-            let _ = tracker.update();
-        }
         
         // Active applications section
         ui.collapsing("Active Applications", |ui| {
@@ -65,6 +65,9 @@ impl RizeCloneApp {
                             ui.label("○"); // Inactive indicator
                         }
                         ui.label(name);
+                        if let Some(title) = &info.window_title {
+                            ui.label(format!(" - {}", title));
+                        }
                         ui.label(format_duration(Duration::seconds(info.duration)));
                     });
                 }
@@ -192,6 +195,15 @@ impl RizeCloneApp {
 
 impl eframe::App for RizeCloneApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+        // Update process tracker at regular intervals
+        if self.last_update.elapsed() >= self.update_interval {
+            if let Ok(mut tracker) = self.process_tracker.lock() {
+                let _ = tracker.update();
+            }
+            self.last_update = Instant::now();
+            ctx.request_repaint(); // Request repaint to update the UI
+        }
+
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             ui.horizontal(|ui| {
                 ui.selectable_value(&mut self.current_tab, Tab::Dashboard, "Dashboard");
