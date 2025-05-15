@@ -3,7 +3,7 @@ use chrono::{DateTime, Utc};
 use log::{debug, info, warn};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use sysinfo::{System, SystemExt, ProcessExt};
+use sysinfo::{System, Process};
 use std::process::Command;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
