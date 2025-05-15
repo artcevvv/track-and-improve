@@ -7,16 +7,16 @@ description = "A productivity application for process tracking and focus managem
 
 [dependencies]
 # Process tracking
-sysinfo = "0.30"  # For system information and process monitoring
+sysinfo = { version = "0.30.5", features = ["macos"] }  # For system information and process monitoring
 chrono = { version = "0.4", features = ["serde"] }    # For time handling
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
-tokio = { version = "1.36", features = ["full"] }
+tokio = { version = "1.36.0", features = ["full"] }
 tui = "0.19"      # Terminal UI for the CLI interface
 crossterm = "0.27" # Cross-platform terminal manipulation
 anyhow = "1.0"    # Error handling
 log = "0.4"       # Logging
-env_logger = "0.11"
+env_logger = "0.11.2"
 dirs = "5.0"      # For finding user directories
 notify = "5.1"    # For file system events
 
@@ -27,7 +27,8 @@ egui_extras = { version = "0.24", features = ["image"] }
 chrono-tz = "0.8" # Timezone support for calendar
 
 # Platform-specific dependencies
-[target.'cfg(windows)'.dependencies]
+[target.'cfg(target_os = "windows")'.dependencies]
 windows = { version = "0.48", features = ["Win32_UI_WindowsAndMessaging", "Win32_Foundation"] }
 
-num-traits = "0.2"
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = "0.9"

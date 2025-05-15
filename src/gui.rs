@@ -59,42 +59,16 @@ impl RizeCloneApp {
 
                 for (name, info) in apps {
                     ui.horizontal(|ui| {
-                        // Status indicators
                         if info.is_active {
                             ui.label("●"); // Active indicator
                         } else {
                             ui.label("○"); // Inactive indicator
                         }
-                        
-                        // Window state indicators
-                        if info.is_minimized {
-                            ui.label("📥"); // Minimized
+                        ui.label(name);
+                        if let Some(title) = &info.window_title {
+                            ui.label(format!(" - {}", title));
                         }
-                        if info.is_maximized {
-                            ui.label("📈"); // Maximized
-                        }
-                        if info.is_fullscreen {
-                            ui.label("📺"); // Fullscreen
-                        }
-                        if info.is_urgent {
-                            ui.label("⚠️"); // Urgent
-                        }
-                        
-                        // App name and title
-                        let app_name = info.app_id.as_ref().unwrap_or(name);
-                        ui.label(app_name);
-                        ui.label(format!(" - {}", info.window_title));
-                        
-                        // Duration
-                        ui.label(format_duration(chrono::Duration::seconds(info.duration.as_secs() as i64)));
-                        
-                        // Workspace and monitor info
-                        if let Some(workspace) = info.workspace {
-                            ui.label(format!(" [Workspace {}]", workspace + 1));
-                        }
-                        if let Some(monitor) = info.monitor {
-                            ui.label(format!(" [Monitor {}]", monitor + 1));
-                        }
+                        ui.label(format_duration(Duration::seconds(info.duration)));
                     });
                 }
             }

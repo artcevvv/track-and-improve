@@ -3124,7 +3124,6 @@ dependencies = [
  "env_logger",
  "log",
  "notify",
- "num-traits",
  "serde",
  "serde_json",
  "sysinfo",
